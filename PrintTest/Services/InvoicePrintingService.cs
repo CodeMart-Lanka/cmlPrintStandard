@@ -7,6 +7,7 @@ using System.Drawing.Printing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static cmlPrint.Print.cmlPrintDocument;
 
 namespace PrintTest.Services
 {
@@ -42,13 +43,13 @@ namespace PrintTest.Services
                         doc.PrinterSettings.DefaultPageSettings.Margins.Bottom
                 };
                 PrintPageEventArgs e = new PrintPageEventArgs(dummyGraphics, rec, rec, doc.DefaultPageSettings);
-                new cmlPrintDocument(dummyDoc, dummy).PreProcess(e);
+                new cmlPrintDocument(dummyDoc, dummy, paperType: PaperTypes.SingleSheet).PreProcess(e);
                 ItemTableRowCount = GetRowCountInItemTable(dummy);
             }
             PrintTableContainerCell page = new PrintTableContainerCell();
             page.SetContent(GetContainerTable());
 
-            new cmlPrintDocument(Doc, page);
+            new cmlPrintDocument(Doc, page, paperType: PaperTypes.SingleSheet);
             //new cmlPrintDocument(Doc, page);
         }
 
@@ -56,6 +57,7 @@ namespace PrintTest.Services
         private PrintTable GetContainerTable()
         {
             PrintTable container = new PrintTable(1);
+            container.AllowRowSplitting = true;
             PrintTableRow[] rows = new PrintTableRow[1];
 
             // Header
@@ -71,7 +73,7 @@ namespace PrintTest.Services
         #region Invioce table
         private PrintTable GetInvoiceTable()
         {
-            PrintTable table = new PrintTable(4, new float[] { 15, 15, 15, 55 });
+            PrintTable table = new PrintTable(5, new float[] { 15, 15, 15, 40, 15 });
             ItemTableIndex = table.Index;
             Invoices.ForEach(invoice => table.Rows.Add(GetInvoiceRow(invoice)));
 
@@ -106,7 +108,24 @@ namespace PrintTest.Services
                 BottomBorderThickness = 1,
                 RightBorderThickness = 1
             });
+            row.Add(GetInvoiceLineTable(invoice.Lines));
             return row;
+        }
+        public PrintTable GetInvoiceLineTable(List<string> lines)
+        {
+            var table = new PrintTable(1);
+            table.TopBorderThickness = 1;
+            table.RightBorderThickness = 1;
+            table.BottomBorderThickness = 1;
+            
+            lines.ForEach(line =>
+            {
+                var row = new PrintTableRow();
+                row.Add(new PrintTableTextCell() { Text = line });
+                table.Rows.Add(row);
+            });
+
+            return table;
         }
         #endregion
 

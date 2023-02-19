@@ -20,6 +20,8 @@ namespace cmlPrint.TableStructures
 
             width *= (resolution / 96);
             height *= (resolution / 96);
+            if (image == null)
+                image = new Bitmap((int)width, (int)height);
             Bitmap bitmap = new Bitmap(image, (int)width, (int)height);
             bitmap.SetResolution(resolution, resolution);
             Image = bitmap;

@@ -61,11 +61,18 @@ namespace cmlPrint.TableStructures
         {
             return $"PrintTable[{Index}] | Rows = {Rows.Count}, Columns = {Columns}";
         }
+
+        public override void ResetProcessingStatus()
+        {
+            base.ResetProcessingStatus();
+            Rows?.ForEach(row => row.ResetProcessingStatus());
+        }
         #endregion
 
         public float TotalWeight => ColumnWeights.Sum();
         public List<PrintTableRow> Rows { get; set; }
         public int Columns { get; }
         public float[] ColumnWeights { get; }
+        public bool AllowRowSplitting { get; set; }
     }
 }

@@ -10,24 +10,29 @@ namespace cmlPrint.Print
 {
     public partial class cmlPrintDocument
     {
-        private void ProcessStructure(PrintTableCell cell)
+        private bool ProcessStructure(PrintTableCell cell)
         {
-            ProcessCell(cell);
-            if(cell is PrintTableContainerCell && (cell as PrintTableContainerCell).Content != null)
+            if (!ProcessCell(cell))
+                return false;
+            if(cell is PrintTableContainerCell containerCell && containerCell.Content != null)
             {
-                (cell as PrintTableContainerCell).Content.SetBounds(cell.AbsolutePrintableArea);
-                ProcessStructure((cell as PrintTableContainerCell).Content);
-                cell.Processed = true;
+                containerCell.Content.SetBounds(cell.AbsolutePrintableArea);
+                if (!ProcessStructure(containerCell.Content))
+                    return false;
+                cell.SetProcessingStatus(ProcessingStatuses.Done, Page);
             }
+            return true;
         }
         private bool ProcessCell(PrintTableCell cell)
         {
-            if (cell is PrintTableTextCell)
-               return ProcessTextCell(cell as PrintTableTextCell);
-            if (cell is PrintTableImageCell)
-                return ProcessImageCell(cell as PrintTableImageCell);
-            if (cell is PrintTable)
-                return ProcessTable(cell as PrintTable);
+            if (cell.ProcessingStatus == ProcessingStatuses.Done)
+                return true;
+            if (cell is PrintTableTextCell textCell)
+               return ProcessTextCell(textCell);
+            if (cell is PrintTableImageCell imageCell)
+                return ProcessImageCell(imageCell);
+            if (cell is PrintTable tableCell)
+                return ProcessTable(tableCell);
             return true;
         }
         private bool ProcessTextCell(PrintTableTextCell cell)
@@ -56,24 +61,24 @@ namespace cmlPrint.Print
                     cell.Lines[x + 1] = cell.Lines[x].Substring(length);
                     cell.Lines[x] = cell.Lines[x].Substring(0,length);
                 }
-                if(PrintPageEventArgs.MarginBounds.Bottom <= cell.Bounds.Bottom + size.Height)
+                if(PaperType == PaperTypes.SingleSheet && PrintPageEventArgs.MarginBounds.Bottom <= cell.Bounds.Bottom + size.Height)
                 {
                     return false;
                 }
                 else if (cell.AutoSize)
                     cell.SetHeight(cell.Bounds.Height + size.Height);
             }
-            cell.Processed = true;
+            cell.SetProcessingStatus(ProcessingStatuses.Done, Page);
             return true;
         }
         private bool ProcessImageCell(PrintTableImageCell cell)
         {
-            if (PrintPageEventArgs.MarginBounds.Bottom <= cell.ImageHeight + cell.MinHeight)
+            if (PaperType == PaperTypes.SingleSheet && PrintPageEventArgs.MarginBounds.Bottom <= cell.ImageHeight + cell.MinHeight)
             {
                 return false;
             }
             cell.SetHeight(cell.ImageHeight + cell.MinHeight);
-            cell.Processed = true;
+            cell.SetProcessingStatus(ProcessingStatuses.Done, Page);
             return true;
         }
         private bool ProcessTable(PrintTable table)
@@ -81,41 +86,58 @@ namespace cmlPrint.Print
             Validate(table);
             table.Height = table.MinHeight;
             table.ResetPosition(); // Set Current Pos
+            ProcessingStatuses processingStatus = ProcessingStatuses.Done;
             foreach (PrintTableRow row in table.Rows)
             {
-                float maxHeght = 0;
-                row.Top = table.Y;
-                row.Left = table.X;
-                row.Width = table.AbsolutePrintableArea.Width;
-                float unitWidth = row.AbsolutePrintableArea.Width / table.TotalWeight;
-                row.ResetPosition();
+                if (row.ProcessingStatus != ProcessingStatuses.Done)
+                {
+                    float maxHeght = 0;
+                    row.Top = table.Y;
+                    row.Left = table.X;
+                    row.Width = table.AbsolutePrintableArea.Width;
+                    float unitWidth = row.AbsolutePrintableArea.Width / table.TotalWeight;
+                    row.ResetPosition();
 
-                // Calculate Row Height
-                for (int i = 0; i < row.Cells.Length; i++)
-                {
-                    PrintTableCell cell = row[i];
-                    cell.SetWidth(unitWidth * table.ColumnWeights[i]); // Set Width
-                    cell.Left = row.X;
-                    cell.Top = row.Y;
-                    if (!ProcessCell(cell))
+                    // Calculate Row Height
+                    for (int i = 0; i < row.Cells.Length; i++)
+                    {
+                        PrintTableCell cell = row[i];
+                        cell.SetWidth(unitWidth * table.ColumnWeights[i]); // Set Width
+                        cell.Left = row.X;
+                        cell.Top = row.Y;
+                        bool processed = ProcessCell(cell);
+                        if (processed || table.AllowRowSplitting)
+                        {
+                            maxHeght = Math.Max(maxHeght, cell.Bounds.Height);
+                            row.X += cell.Bounds.Width;
+                        }
+                        else
+                        {
+                            processingStatus = ProcessingStatuses.Pending;
+                            row.ResetProcessingStatus();
+                        }
+                        if (!processed && table.AllowRowSplitting)
+                            processingStatus = ProcessingStatuses.Partially;
+                        if (!processed)
+                            i = row.Cells.Length; // break loop
+                    }
+                    // Reset Row Sizes
+                    for (int i = 0; i < row.Cells.Length; i++)
+                    {
+                        PrintTableCell cell = row[i];
+                        cell.Height = maxHeght;
+                    }
+                    row.Height = row.MinHeight + maxHeght;
+                    table.Height += row.Height;
+                    row.X = table.RelativePrintableArea.Left;
+                    row.Y += maxHeght;
+                    table.Y += row.Height;
+                    row.SetProcessingStatus(processingStatus, Page);
+                    if (processingStatus != ProcessingStatuses.Done)
                         return false;
-                    maxHeght = Math.Max(maxHeght, cell.Bounds.Height);
-                    row.X += cell.Bounds.Width;
                 }
-                // Reset Row Sizes
-                for (int i = 0; i < row.Cells.Length; i++)
-                {
-                    PrintTableCell cell = row[i];
-                    cell.Height = maxHeght;
-                }
-                row.Height = row.MinHeight + maxHeght;
-                table.Height += row.Height;
-                row.X = table.RelativePrintableArea.Left;
-                row.Y += maxHeght;
-                table.Y += row.Height;
-                row.Processed = true;
             }
-            table.Processed = true;
+            table.SetProcessingStatus(ProcessingStatuses.Done, Page);
             return true;
         }
     }

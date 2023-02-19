@@ -16,6 +16,13 @@ namespace cmlPrint.TableStructures
         {
             return $"PrintTableContainer[{Index}]  | Content : {Content}";
         }
+
+        public override void ResetProcessingStatus()
+        {
+            base.ResetProcessingStatus();  
+            Content?.ResetProcessingStatus();
+        }
+
         public PrintTableCell Content { get; private set; }
     }
 }
