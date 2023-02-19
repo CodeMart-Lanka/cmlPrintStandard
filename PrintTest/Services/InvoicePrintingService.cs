@@ -114,6 +114,7 @@ namespace PrintTest.Services
         public PrintTable GetInvoiceLineTable(List<string> lines)
         {
             var table = new PrintTable(1);
+            table.AllowRowSplitting = true;
             table.TopBorderThickness = 1;
             table.RightBorderThickness = 1;
             table.BottomBorderThickness = 1;
