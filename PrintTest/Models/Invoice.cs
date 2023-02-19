@@ -13,5 +13,6 @@ namespace PrintTest.Models
         public DateTime DateTime {get;set;}
         public decimal Total { get; set; }
         public string? Description { get; set; }
+        public List<string> Lines { get; set; } = new List<string>();
     }
 }

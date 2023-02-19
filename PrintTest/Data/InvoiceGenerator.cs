@@ -25,13 +25,17 @@ namespace PrintTest.Data
 
         public Invoice GetInvoice(int? id = null)
         {
-            return new Invoice()
+            var invoice = new Invoice()
             {
                 DateTime = DateTime.Now,
                 Description = DESCRIPTION,
                 Id = id ?? Random.Next(1250250),
                 Total = Random.Next(125125458)
             };
+            int count = id ?? 1;
+            for (int i = 0; i < count; i++)
+                invoice.Lines.Add("Line " + (i + 1));
+            return invoice;
         }
         Random Random { get; set; }
         const string DESCRIPTION = "If you’ve ever read a blog post, you’ve consumed content from a thought leader that is an expert in their industry. Chances are if the blog post was written effectively, you came away with helpful knowledge and a positive opinion about the writer or brand that produced the content.";

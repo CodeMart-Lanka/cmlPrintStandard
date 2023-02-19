@@ -181,6 +181,17 @@ namespace cmlPrint.TableStructures
             }
             return null;
         }
+        public void SetProcessingStatus(ProcessingStatuses status, int page)
+        {
+            ProcessingStatus = status;
+            Pages.Add(page);
+        }
+        public bool IsInPage(int page) => Pages.Contains(page);
+        public virtual void ResetProcessingStatus()
+        {
+            ProcessingStatus = ProcessingStatuses.Pending;
+            Pages = new List<int>(5);
+        }
         #endregion
 
         #region Margins
@@ -230,14 +241,16 @@ namespace cmlPrint.TableStructures
         public int ColSpan { get; set; }
        // public PrintTableRow Row { get; set; }
         public Color ForeColor { get; set; } = Color.Black;
-        public int PageNumber { get; set; } = 1;
+        public List<int> Pages { get; private set; } = new List<int>(5); 
         public bool AutoSize { get; set; } = true;
         public int Index { get; set; }
-        public bool Processed { get; set; }   
+        public ProcessingStatuses ProcessingStatus { get; private set; }   
         public bool Printed { get; set; }   
+        //public bool AllowPageBreaks { get; set; } 
         public static int Counter { get; set; }
     }
     public enum VerticalAlign { Top, Center, Bottom}
     public enum HorizontalAlign { Left, Center, Right}
     public enum BorderStyle { Line, DashedLine }
+    public enum ProcessingStatuses { Pending, Partially, Done}
 }

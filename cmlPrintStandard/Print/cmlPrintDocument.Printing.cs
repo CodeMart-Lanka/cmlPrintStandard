@@ -11,25 +11,35 @@ namespace cmlPrint.Print
 {
     public partial class cmlPrintDocument
     {
-        private void PrintCell(PrintTableCell cell)
+        private bool PrintCell(PrintTableCell cell)
         {
             if (cell == null)
-                return;
-            DrawBoarders(cell);
-            if (cell is PrintTableTextCell)
-                PrintTextCell(cell as PrintTableTextCell);
+                return false;
+            
+            bool printedOnCurrentPage = true;
+            
+            if (cell is PrintTableTextCell textCell)
+                printedOnCurrentPage = PrintTextCell(textCell);
 
-            if (cell is PrintTable)
+            else if (cell is PrintTable)
                 PrintTable(cell as PrintTable);
 
-            if (cell is PrintTableImageCell)
-                PrintImageCell(cell as PrintTableImageCell);
+            else if (cell is PrintTableImageCell)
+                printedOnCurrentPage = PrintImageCell(cell as PrintTableImageCell);
 
-            if (cell is PrintTableContainerCell)
-                PrintCell((cell as PrintTableContainerCell).Content);
+            else if (cell is PrintTableContainerCell)
+                printedOnCurrentPage = PrintCell((cell as PrintTableContainerCell).Content);
+            
+            if(printedOnCurrentPage)
+                DrawBoarders(cell);
+            
+            return printedOnCurrentPage;
         }
-        private void PrintTextCell(PrintTableTextCell cell)
+        private bool PrintTextCell(PrintTableTextCell cell)
         {
+            if (cell.ProcessingStatus != ProcessingStatuses.Done || !cell.IsInPage(Page))
+                return false;
+
             cell.ResetPosition(); // Set the Current Postion of the Cell To Upper Left Corner
             float paragraphHeight = MeasureString(cell.Lines, cell.Font).Height;
             if (cell.ContentVerticalAlign == VerticalAlign.Center) // Middle Align
@@ -50,9 +60,14 @@ namespace cmlPrint.Print
                 cell.Y += lineSize.Height; // Increase Y
                 cell.X = cell.AbsolutePrintableArea.Left; // Reset X
             }
+
+            return true;
         }
-        private void PrintImageCell(PrintTableImageCell cell)
+        private bool PrintImageCell(PrintTableImageCell cell)
         {
+            if (cell.ProcessingStatus != ProcessingStatuses.Done || !cell.IsInPage(Page))
+                return false;
+
             cell.ResetPosition();
             if (cell.ContentVerticalAlign == VerticalAlign.Center) // Middle Align
                 cell.Y = cell.RelativePrintableArea.Top + ((cell.RelativePrintableArea.Height - cell.ImageHeight) / 2f);
@@ -63,15 +78,20 @@ namespace cmlPrint.Print
             if (cell.ContentHorizontalAlign == HorizontalAlign.Right)
                 cell.X = cell.RelativePrintableArea.Left + (cell.RelativePrintableArea.Width - cell.ImageWidth);
             Graphics.DrawImage(cell.Image, cell.Pos);
+
+            return true;
         }
         private void PrintTable(PrintTable table)
         {
             foreach (PrintTableRow row in table.Rows)
             {
-                PrintCell(row);
-                foreach (PrintTableCell cell in row.Cells)
+                if (row.ProcessingStatus != ProcessingStatuses.Pending && row.IsInPage(Page))
                 {
-                    PrintCell(cell);
+                    bool printedOnCurrentPage = false;
+                    foreach (PrintTableCell cell in row.Cells)
+                        printedOnCurrentPage = PrintCell(cell) || printedOnCurrentPage;
+                    if (printedOnCurrentPage)
+                        DrawBoarders(row);
                 }
             }
         }

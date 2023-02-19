@@ -18,6 +18,10 @@ namespace cmlPrint.TableStructures
         {
             _Cells.Add(cell);
         }
+        public void AddRange(PrintTableCell[] cells)
+        {
+            _Cells.AddRange(cells);
+        }
         #region Override
         public override void SetHeight(float height)
         {
@@ -34,6 +38,11 @@ namespace cmlPrint.TableStructures
         public override string ToString()
         {
             return $"PrintTableRow[{Index}]  | Cells = {Cells.Length}";
+        }
+        public override void ResetProcessingStatus()
+        {
+            base.ResetProcessingStatus();
+            _Cells?.ForEach(cell => cell.ResetProcessingStatus());
         }
         #endregion
 
