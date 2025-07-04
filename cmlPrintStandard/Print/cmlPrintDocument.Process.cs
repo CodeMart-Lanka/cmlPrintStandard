@@ -40,14 +40,15 @@ namespace cmlPrint.Print
             cell.Lines = new string[] { cell.Text };
             if (cell.AutoSize)
                 cell.SetHeight(cell.MinHeight); // Reset Cell Height
-            for(int x = 0; x < cell.Lines.Length; x++)
+            //cell.ApplyRotation(Graphics);
+            for (int x = 0; x < cell.Lines.Length; x++)
             {
                 int length = cell.Lines[x].Length;
-                SizeF size = MeasureString(cell.Lines[x], cell.Font);
+                SizeF size = MeasureString(cell.Lines[x], cell.Font, cell.Rotation);
                 while (size.Width >= cell.RelativePrintableArea.Width && length > 1) 
                 {
                     length--;
-                    size = MeasureString(cell.Text.Substring(0,length), cell.Font);
+                    size = MeasureString(cell.Text.Substring(0,length), cell.Font ,cell.Rotation);
                 }
                 if(length != cell.Lines[x].Length) // Has to be Trimmed
                 {
@@ -69,6 +70,7 @@ namespace cmlPrint.Print
                     cell.SetHeight(cell.Bounds.Height + size.Height);
             }
             cell.SetProcessingStatus(ProcessingStatuses.Done, Page);
+            //cell.ResetRotation(Graphics);
             return true;
         }
         private bool ProcessImageCell(PrintTableImageCell cell)

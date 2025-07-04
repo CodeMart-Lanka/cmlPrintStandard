@@ -41,26 +41,30 @@ namespace cmlPrint.Print
                 return false;
 
             cell.ResetPosition(); // Set the Current Postion of the Cell To Upper Left Corner
-            float paragraphHeight = MeasureString(cell.Lines, cell.Font).Height;
-            if (cell.ContentVerticalAlign == VerticalAlign.Center) // Middle Align
+            
+            float paragraphHeight = MeasureString(cell.Lines, cell.Font, cell.Rotation).Height;
+            if (cell.ContentVerticalAlign == VerticalAlign.Center && cell.Rotation == Rotations.Horizontal) // Middle Align
                 cell.Y = cell.AbsolutePrintableArea.Top + ((cell.AbsolutePrintableArea.Height - paragraphHeight) / 2f);
-            if (cell.ContentVerticalAlign == VerticalAlign.Bottom) // End Align
+            if (cell.ContentVerticalAlign == VerticalAlign.Bottom && cell.Rotation == Rotations.Horizontal) // End Align
                 cell.Y = cell.AbsolutePrintableArea.Top + cell.AbsolutePrintableArea.Height - paragraphHeight;
             foreach (string line in cell.Lines)
             {
-                SizeF lineSize = MeasureString(line, cell.Font);
+                SizeF lineSize = MeasureString(line, cell.Font, cell.Rotation);
 
-                if (cell.ContentHorizontalAlign == HorizontalAlign.Center)
+                if (cell.ContentHorizontalAlign == HorizontalAlign.Center && cell.Rotation == Rotations.Horizontal)
                     cell.X = cell.AbsolutePrintableArea.Left + ((cell.AbsolutePrintableArea.Width - lineSize.Width) / 2f);
-                if (cell.ContentHorizontalAlign == HorizontalAlign.Right)
+                if (cell.ContentHorizontalAlign == HorizontalAlign.Right && cell.Rotation == Rotations.Horizontal)
                     cell.X = cell.AbsolutePrintableArea.Left + (cell.AbsolutePrintableArea.Width - lineSize.Width);
 
+                GraphicsState prevGraphicState = cell.ApplyRotation(Graphics, ref lineSize); // Apply Rotation if any
                 Graphics.DrawString(line, cell.Font, new SolidBrush(cell.ForeColor), cell.Pos);
+                if (prevGraphicState != null)
+                    Graphics.Restore(prevGraphicState); // Restore the Graphics State if it was changed
 
                 cell.Y += lineSize.Height; // Increase Y
                 cell.X = cell.AbsolutePrintableArea.Left; // Reset X
             }
-
+            
             return true;
         }
         private bool PrintImageCell(PrintTableImageCell cell)

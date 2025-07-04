@@ -253,4 +253,5 @@ namespace cmlPrint.TableStructures
     public enum HorizontalAlign { Left, Center, Right}
     public enum BorderStyle { Line, DashedLine }
     public enum ProcessingStatuses { Pending, Partially, Done}
+    public enum Rotations { Horizontal, Vertical }
 }

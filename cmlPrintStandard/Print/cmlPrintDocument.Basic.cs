@@ -1,4 +1,6 @@
-﻿using System;
+﻿using cmlPrint.TableStructures;
+using cmlPrintStandard.Extension;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Printing;
@@ -23,11 +25,12 @@ namespace cmlPrint.Print
             Resize(ref rect, -margins.Top, -margins.Left, -margins.Bottom, -margins.Right);
         }
         #region Measuring
-        public SizeF MeasureString(string s, Font f)
+        public SizeF MeasureString(string s, Font f, Rotations rotation)
         {
-            return Graphics.MeasureString(s, f);
+            var size = Graphics.MeasureString(s, f);
+            return rotation == Rotations.Vertical ? size.Flip() : size;
         }
-        public SizeF MeasureString(string[] lines, Font f)
+        public SizeF MeasureString(string[] lines, Font f, Rotations rotation)
         {
             SizeF size = new SizeF();
             foreach (string line in lines)
@@ -36,7 +39,7 @@ namespace cmlPrint.Print
                 size.Height += temp.Height;
                 size.Width = Math.Max(temp.Width, size.Width);
             }
-            return size;
+            return rotation == Rotations.Vertical ? size.Flip() : size;
         }
         #endregion
     }

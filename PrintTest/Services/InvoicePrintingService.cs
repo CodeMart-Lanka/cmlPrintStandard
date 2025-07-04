@@ -76,7 +76,7 @@ namespace PrintTest.Services
             PrintTable table = new PrintTable(5, new float[] { 15, 15, 15, 40, 15 });
             ItemTableIndex = table.Index;
             Invoices.ForEach(invoice => table.Rows.Add(GetInvoiceRow(invoice)));
-
+            table.Rows.Add(GetFooterRow());
             return table;
         }
         private PrintTableRow GetInvoiceRow(Invoice invoice)
@@ -110,6 +110,31 @@ namespace PrintTest.Services
             });
             row.Add(GetInvoiceLineTable(invoice.Lines));
             return row;
+        }
+        public PrintTableRow GetFooterRow()
+        {
+            var row = new PrintTableRow();
+            row.Add(GetFooterText(-90));
+            row.Add(GetFooterText(0));
+            row.Add(new PrintTableTextCell());
+            row.Add(new PrintTableTextCell());
+            row.Add(new PrintTableTextCell());
+            return row;
+        }
+        public PrintTableCell GetFooterText(int rotation)
+        {
+            var cell = new PrintTableTextCell()
+            {
+                Text = "Footer Text",
+                //ContentHorizontalAlign = HorizontalAlign.Center,
+                //ContentVerticalAlign = VerticalAlign.Center,
+                BorderThickness = 1,
+                //BottomBorderThickness = 1,
+                //LeftBorderThickness = 1,
+                //RightBorderThickness = 1,
+                //Rotation = rotation,
+            };
+            return cell;
         }
         public PrintTable GetInvoiceLineTable(List<string> lines)
         {

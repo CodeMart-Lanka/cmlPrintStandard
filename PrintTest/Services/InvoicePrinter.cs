@@ -5,6 +5,7 @@ using System.Drawing.Printing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace PrintTest.Services
 {
@@ -27,6 +28,20 @@ namespace PrintTest.Services
         {
             var doc = new PrintDocument();
             var invoicePrintingService = new InvoicePrintingService(doc, invoices, DummyGraphics);
+            control.Document = doc;
+        }
+        public void PrintRotatedTextOnPreviewDialog()
+        {
+            var doc = new PrintDocument();
+            var invoicePrintingService = new PrintingService_RotationTest(doc, DummyGraphics);
+            var previewDialog = new PrintPreviewDialog();
+            previewDialog.Document = doc;
+            previewDialog.ShowDialog();
+        }
+        public void PrintRotatedTextOnPreviewControl(PrintPreviewControl control)
+        {
+            var doc = new PrintDocument();
+            var invoicePrintingService = new PrintingService_RotationTest(doc, DummyGraphics);
             control.Document = doc;
         }
     }
