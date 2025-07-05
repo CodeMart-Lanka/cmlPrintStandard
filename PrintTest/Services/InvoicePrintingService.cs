@@ -13,26 +13,19 @@ namespace PrintTest.Services
 {
     internal class InvoicePrintingService
     {
-        /*private A5Printer A5P;
-        private Settings PS = Data.PS;*/
         private PrintDocument Doc { get; }
         private List<Invoice> Invoices { get; }
-        //public InvoicePrintingData PrintingData { get; }
         public int ItemTableRowCount { get; set; }
         private int ItemTableIndex { get; set; }
         public InvoicePrintingService(PrintDocument doc, List<Invoice> invoices, Graphics dummyGraphics)
         {
-            //A5P = PS.A5P;
             Doc = doc;
             Invoices = invoices;
-            //PrintingData = printingData;
             if (dummyGraphics != null)
             {
                 PrintTableContainerCell dummy = new PrintTableContainerCell();
                 dummy.SetContent(GetContainerTable());
                 PrintDocument dummyDoc = new PrintDocument();
-                // dummyDoc.PrinterSettings = doc.PrinterSettings;
-                // dummyDoc.DefaultPageSettings = doc.DefaultPageSettings;
                 Rectangle rec = new Rectangle()
                 {
                     X = doc.PrinterSettings.DefaultPageSettings.Margins.Left,
@@ -50,7 +43,6 @@ namespace PrintTest.Services
             page.SetContent(GetContainerTable());
 
             new cmlPrintDocument(Doc, page, paperType: PaperTypes.SingleSheet);
-            //new cmlPrintDocument(Doc, page);
         }
 
         #region Container Table
@@ -126,13 +118,7 @@ namespace PrintTest.Services
             var cell = new PrintTableTextCell()
             {
                 Text = "Footer Text",
-                //ContentHorizontalAlign = HorizontalAlign.Center,
-                //ContentVerticalAlign = VerticalAlign.Center,
                 BorderThickness = 1,
-                //BottomBorderThickness = 1,
-                //LeftBorderThickness = 1,
-                //RightBorderThickness = 1,
-                //Rotation = rotation,
             };
             return cell;
         }

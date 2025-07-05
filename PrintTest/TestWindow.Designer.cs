@@ -1,6 +1,6 @@
 ﻿namespace PrintTest
 {
-    partial class Form1
+    partial class TestWindow
     {
         /// <summary>
         ///  Required designer variable.

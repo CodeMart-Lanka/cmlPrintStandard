@@ -5,11 +5,11 @@ using System.Drawing.Printing;
 
 namespace PrintTest
 {
-    public partial class Form1 : Form
+    public partial class TestWindow : Form
     {
         InvoiceGenerator invoiceGenerator { get; }
         InvoicePrinter InvoicePrinter { get; }
-        public Form1()
+        public TestWindow()
         {
             InitializeComponent();
             invoiceGenerator = new InvoiceGenerator();

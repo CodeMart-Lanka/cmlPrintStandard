@@ -86,7 +86,6 @@ namespace PrintTest.Services
 
             container.Rows.AddRange(rows);
 
-            //return container;
             return container;
         }
         private PrintTableCell GetTextCell()
@@ -116,13 +115,8 @@ namespace PrintTest.Services
                 Text = "Text",
                 Font = new Font("Arial", 16, FontStyle.Bold),
                 ContentHorizontalAlign = HorizontalAlign.Center,
-                //ContentVerticalAlign = VerticalAlign.Center,
-                //AutoSize = true,
-                //BorderThickness = 1,
                 BorderThickness = 1,
-                //BottomBorderColor = Color.Red,
                 Rotation = Rotations.Vertical,
-                //PaddingBottom = 10
             });
             table.Rows.AddRange(rows);
             return table;

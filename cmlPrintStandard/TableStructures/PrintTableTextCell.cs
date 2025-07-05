@@ -27,6 +27,8 @@ namespace cmlPrint.TableStructures
             var dy = Y + AbsolutePrintableArea.Left + lineSize.Height;
             if (ContentHorizontalAlign == HorizontalAlign.Center)
                 dx += ((Width / 2) - (lineSize.Width / 2));
+            if (ContentVerticalAlign == VerticalAlign.Center)
+                dy += ((Height / 2) - (lineSize.Height / 2));
             g.TranslateTransform(dx, dy); 
             g.RotateTransform(-90);
             return state;

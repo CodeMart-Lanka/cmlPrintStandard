@@ -40,7 +40,6 @@ namespace cmlPrint.Print
             cell.Lines = new string[] { cell.Text };
             if (cell.AutoSize)
                 cell.SetHeight(cell.MinHeight); // Reset Cell Height
-            //cell.ApplyRotation(Graphics);
             for (int x = 0; x < cell.Lines.Length; x++)
             {
                 int length = cell.Lines[x].Length;
@@ -70,7 +69,6 @@ namespace cmlPrint.Print
                     cell.SetHeight(cell.Bounds.Height + size.Height);
             }
             cell.SetProcessingStatus(ProcessingStatuses.Done, Page);
-            //cell.ResetRotation(Graphics);
             return true;
         }
         private bool ProcessImageCell(PrintTableImageCell cell)
