@@ -3,10 +3,22 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	  <PackageReadmeFile>README.md</PackageReadmeFile>
+	  <Version>1.0.1</Version>
+	  <PackageIcon>cml-logo.png</PackageIcon>
+	  <RepositoryUrl>https://github.com/ChalakaKasthuriArachchi/cmlPrintStandard</RepositoryUrl>
+	  <Description>A flexible and powerful .NET Standard 2.0 library for creating and managing print layouts with table-based structures. This library simplifies the process of creating complex print layouts with tables, text, and images.</Description>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
+    <None Include="..\..\..\..\..\..\..\Designs\cml-logo.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+	<None Include="README.md" Pack="True" PackagePath="\">
+	  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	</None>
   </ItemGroup>
 
 </Project>
