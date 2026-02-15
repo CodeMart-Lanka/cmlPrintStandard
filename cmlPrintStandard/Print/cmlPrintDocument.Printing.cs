@@ -1,4 +1,4 @@
-﻿using cmlPrint.TableStructures;
+using cmlPrint.TableStructures;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -15,6 +15,8 @@ namespace cmlPrint.Print
         {
             if (cell == null)
                 return false;
+
+            FillBackground(cell);
             
             bool printedOnCurrentPage = true;
             
@@ -98,6 +100,11 @@ namespace cmlPrint.Print
                         DrawBoarders(row);
                 }
             }
+        }
+        private void FillBackground(PrintTableCell cell)
+        {
+            if (cell.FillColor != Color.Empty)
+                Graphics.FillRectangle(new SolidBrush(cell.FillColor), cell.Bounds);
         }
         private void DrawBoarders(PrintTableCell cell)
         {

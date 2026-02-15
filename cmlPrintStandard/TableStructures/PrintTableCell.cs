@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -241,6 +241,7 @@ namespace cmlPrint.TableStructures
         public int ColSpan { get; set; }
        // public PrintTableRow Row { get; set; }
         public Color ForeColor { get; set; } = Color.Black;
+        public Color FillColor { get; set; } = Color.Empty;
         public List<int> Pages { get; private set; } = new List<int>(5); 
         public bool AutoSize { get; set; } = true;
         public int Index { get; set; }
