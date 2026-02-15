@@ -35,6 +35,7 @@
             textBox1 = new TextBox();
             btn_TestPrint = new Button();
             button3 = new Button();
+            button4 = new Button();
             SuspendLayout();
             // 
             // button1
@@ -100,11 +101,22 @@
             button3.UseVisualStyleBackColor = true;
             button3.Click += button3_Click;
             // 
-            // Form1
+            // button4
+            // 
+            button4.Location = new Point(12, 170);
+            button4.Name = "button4";
+            button4.Size = new Size(129, 23);
+            button4.TabIndex = 4;
+            button4.Text = "Fill Color";
+            button4.UseVisualStyleBackColor = true;
+            button4.Click += button3_Click;
+            // 
+            // TestWindow
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(button4);
             Controls.Add(button3);
             Controls.Add(textBox1);
             Controls.Add(printPreviewControl1);
@@ -112,7 +124,7 @@
             Controls.Add(btn_TestPrint);
             Controls.Add(button2);
             Controls.Add(button1);
-            Name = "Form1";
+            Name = "TestWindow";
             Text = "Form1";
             WindowState = FormWindowState.Maximized;
             Load += Form1_Load;
@@ -130,5 +142,6 @@
         private TextBox textBox1;
         private Button btn_TestPrint;
         private Button button3;
+        private Button button4;
     }
 }

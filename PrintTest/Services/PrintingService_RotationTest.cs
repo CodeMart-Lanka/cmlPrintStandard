@@ -49,7 +49,7 @@ namespace PrintTest.Services
             PrintTableRow[] rows = new PrintTableRow[9];
 
             rows[0] = new PrintTableRow();
-            rows[0].Add(GetTextCell());
+            rows[0].Add(GetFilledTextCell());
             rows[0].Add(GetTextCell());
             
             rows[1] = new PrintTableRow();
@@ -98,6 +98,20 @@ namespace PrintTest.Services
                 ContentVerticalAlign = VerticalAlign.Center,
                 AutoSize = true,
                 BorderThickness = 1
+            };
+        }
+        private PrintTableCell GetFilledTextCell()
+        {
+            return new PrintTableTextCell()
+            {
+                Text = "Sample Text",
+                Font = new Font("Arial", 16, FontStyle.Bold),
+                ContentHorizontalAlign = HorizontalAlign.Center,
+                ContentVerticalAlign = VerticalAlign.Center,
+                AutoSize = true,
+                BorderThickness = 1,
+                FillColor = Color.Black,
+                ForeColor = Color.White
             };
         }
         private PrintTableCell GetRotatedTextCell()
