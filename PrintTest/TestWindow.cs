@@ -9,11 +9,13 @@ namespace PrintTest
     {
         InvoiceGenerator invoiceGenerator { get; }
         InvoicePrinter InvoicePrinter { get; }
+        private readonly PrintDocument _printSetupDocument = new PrintDocument();
+
         public TestWindow()
         {
             InitializeComponent();
             invoiceGenerator = new InvoiceGenerator();
-            InvoicePrinter = new InvoicePrinter(dummyPanel.CreateGraphics());
+            InvoicePrinter = new InvoicePrinter(dummyPanel.CreateGraphics(), _printSetupDocument);
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -28,9 +30,35 @@ namespace PrintTest
             InvoicePrinter.DisplayPrintPrevieDialog(invoices);
         }
 
+        private void btnPrinterAndPageSetup_Click(object sender, EventArgs e)
+        {
+            using (var printDialog = new PrintDialog())
+            {
+                printDialog.Document = _printSetupDocument;
+                printDialog.UseEXDialog = true;
+                if (printDialog.ShowDialog() != DialogResult.OK)
+                    return;
+            }
+
+            using (var pageSetupDialog = new PageSetupDialog())
+            {
+                pageSetupDialog.Document = _printSetupDocument;
+                pageSetupDialog.EnableMetric = true;
+                if (pageSetupDialog.ShowDialog() != DialogResult.OK)
+                    return;
+            }
+
+            if (printPreviewControl1.Document != null)
+            {
+                InvoicePrinter.ApplySharedPrintSetup(printPreviewControl1.Document);
+                printPreviewControl1.InvalidatePreview();
+            }
+        }
+
         private void btn_TestPrint_Click(object sender, EventArgs _e)
         {
             var doc = new PrintDocument();
+            InvoicePrinter.ApplySharedPrintSetup(doc);
             //var previewDialog = new PrintPreviewDialog();
             //previewDialog.Document = doc;
             printPreviewControl1.Document = doc;

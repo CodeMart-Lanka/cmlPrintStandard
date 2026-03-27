@@ -1,4 +1,4 @@
-﻿using cmlPrint.TableStructures;
+using cmlPrint.TableStructures;
 using System;
 using System.Drawing;
 
@@ -38,24 +38,34 @@ namespace cmlPrint.Print
                 cell.SetHeight(cell.MinHeight); // Reset Cell Height
             for (int x = 0; x < cell.Lines.Length; x++)
             {
-                int length = cell.Lines[x].Length;
-                SizeF size = MeasureString(cell.Lines[x], cell.Font, cell.Rotation);
+                string line = cell.Lines[x];
+                int length = line.Length;
+                SizeF size = MeasureString(line, cell.Font, cell.Rotation);
                 while (size.Width >= cell.RelativePrintableArea.Width && length > 1) 
                 {
                     length--;
-                    size = MeasureString(cell.Text.Substring(0,length), cell.Font ,cell.Rotation);
+                    size = MeasureString(line.Substring(0, length), cell.Font, cell.Rotation);
                 }
-                if(length != cell.Lines[x].Length) // Has to be Trimmed
+                if (length != line.Length)
                 {
-                    // Set Length to Appropriate Position for Break
-                    int breakPoint = cell.Lines[x].Substring(0,length).LastIndexOfAny(new char[] { ' '});
+                    int breakPoint = line.Substring(0, length).LastIndexOfAny(new char[] { ' ' });
                     if (breakPoint != -1)
                         length = breakPoint + 1;
-                    if(cell.Lines[x].Length <= length)
-                        break;
-                    Array.Resize(ref cell.Lines, cell.Lines.Length + 1);
-                    cell.Lines[x + 1] = cell.Lines[x].Substring(length);
-                    cell.Lines[x] = cell.Lines[x].Substring(0,length);
+                    if (cell.Overflow == TextCellOverflow.Truncate)
+                    {
+                        if (length < line.Length)
+                            cell.Lines[x] = line.Substring(0, length);
+                        size = MeasureString(cell.Lines[x], cell.Font, cell.Rotation);
+                    }
+                    else
+                    {
+                        if (line.Length <= length)
+                            break;
+                        Array.Resize(ref cell.Lines, cell.Lines.Length + 1);
+                        cell.Lines[x + 1] = line.Substring(length);
+                        cell.Lines[x] = line.Substring(0, length);
+                        size = MeasureString(cell.Lines[x], cell.Font, cell.Rotation);
+                    }
                 }
                 if(PaperType == PaperTypes.SingleSheet && PrintPageEventArgs.MarginBounds.Bottom <= cell.Bounds.Bottom + size.Height)
                 {

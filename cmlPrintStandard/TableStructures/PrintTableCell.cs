@@ -255,4 +255,5 @@ namespace cmlPrint.TableStructures
     public enum BorderStyle { Line, DashedLine }
     public enum ProcessingStatuses { Pending, Partially, Done}
     public enum Rotations { Horizontal, Vertical }
+    public enum TextCellOverflow { Wrap, Truncate }
 }

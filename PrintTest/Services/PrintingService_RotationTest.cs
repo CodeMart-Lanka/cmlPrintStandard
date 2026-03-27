@@ -54,15 +54,15 @@ namespace PrintTest.Services
             
             rows[1] = new PrintTableRow();
             rows[1].Add(GetTextCell());
-            rows[1].Add(GetTextCell());
+            rows[1].Add(GetTruncatedTextCell());
             
             rows[2] = new PrintTableRow();
-            rows[2].Add(GetTextCell());
+            rows[2].Add(GetTruncatedTextCell());
             rows[2].Add(GetTextCell());
             
             rows[3] = new PrintTableRow();
             rows[3].Add(GetTextCell());
-            rows[3].Add(GetTextCell());
+            rows[3].Add(GetTruncatedTextCell());
             
             rows[4] = new PrintTableRow();
             rows[4].Add(GetTextCell());
@@ -97,7 +97,20 @@ namespace PrintTest.Services
                 ContentHorizontalAlign = HorizontalAlign.Center,
                 ContentVerticalAlign = VerticalAlign.Center,
                 AutoSize = true,
-                BorderThickness = 1
+                BorderThickness = 1,
+            };
+        }
+        private PrintTableCell GetTruncatedTextCell()
+        {
+            return new PrintTableTextCell()
+            {
+                Text = "Sample Text",
+                Font = new Font("Arial", 16, FontStyle.Bold),
+                ContentHorizontalAlign = HorizontalAlign.Center,
+                ContentVerticalAlign = VerticalAlign.Center,
+                AutoSize = true,
+                BorderThickness = 1,
+                Overflow = TextCellOverflow.Truncate
             };
         }
         private PrintTableCell GetFilledTextCell()

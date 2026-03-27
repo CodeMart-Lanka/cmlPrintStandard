@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -16,7 +16,7 @@ namespace cmlPrint.TableStructures
         }
         public override string ToString()
         {
-            return $"PrintTableTextCell[{Index}]  | Text = {Text}";
+            return $"PrintTableTextCell[{Index}]  | Text = {Text} | Overflow = {Overflow}";
         }
         public GraphicsState ApplyRotation(Graphics g, ref SizeF lineSize)
         {
@@ -37,5 +37,6 @@ namespace cmlPrint.TableStructures
         public string Text { get; set; } = "";
         public Font Font { get; set; } = new Font("Calibri", 8);
         public Rotations Rotation { get; set; } = 0; // 0, 90, 180, 270
+        public TextCellOverflow Overflow { get; set; } = TextCellOverflow.Wrap;
     }
 }

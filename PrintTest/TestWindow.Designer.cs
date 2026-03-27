@@ -1,4 +1,4 @@
-﻿namespace PrintTest
+namespace PrintTest
 {
     partial class TestWindow
     {
@@ -36,6 +36,7 @@
             btn_TestPrint = new Button();
             button3 = new Button();
             button4 = new Button();
+            btnPrinterAndPageSetup = new Button();
             SuspendLayout();
             // 
             // button1
@@ -111,11 +112,22 @@
             button4.UseVisualStyleBackColor = true;
             button4.Click += button3_Click;
             // 
+            // btnPrinterAndPageSetup
+            // 
+            btnPrinterAndPageSetup.Location = new Point(147, 12);
+            btnPrinterAndPageSetup.Name = "btnPrinterAndPageSetup";
+            btnPrinterAndPageSetup.Size = new Size(168, 23);
+            btnPrinterAndPageSetup.TabIndex = 5;
+            btnPrinterAndPageSetup.Text = "Printer and paper...";
+            btnPrinterAndPageSetup.UseVisualStyleBackColor = true;
+            btnPrinterAndPageSetup.Click += btnPrinterAndPageSetup_Click;
+            // 
             // TestWindow
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(btnPrinterAndPageSetup);
             Controls.Add(button4);
             Controls.Add(button3);
             Controls.Add(textBox1);
@@ -143,5 +155,6 @@
         private Button btn_TestPrint;
         private Button button3;
         private Button button4;
+        private Button btnPrinterAndPageSetup;
     }
 }
